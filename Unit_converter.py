@@ -1,3 +1,9 @@
+def conversion_factors_calculation(original_unit_factor, destiny_unit_factor, value):
+    result = (value * original_unit_factor) / destiny_unit_factor
+    
+    return result
+
+
 #Dictionary containing the supported quantities
 quantities = {
     1: "length",
@@ -77,10 +83,32 @@ units = {
     }
 }
 
-#Input the quantity index
-quantity_index = int(input("Input the quantity index:\n"))
 
+#Run through the quantities dictionary
+print("SUPPORTED QUANTITIES:\n")
+for index, quantity in quantities.items():
+    print(f"{index} - {quantity}")
+    
+#Input the quantity index
+quantity_index = int(input("\nInput the quantity index:\n"))
+
+#store the selected quantity
+selected_quantity = quantities[quantity_index]
+
+
+#Run through the units dictionary
+print("\nSUPORTED UNITS\n")
+for index, unit in units[selected_quantity].items():
+   print(f"Index: {index:>2} | Name: {unit["name"]:<18} | Symbol: {unit["symbol"]}")
+    
 #Respectively, inputs for the original and destiny units and value
-original_unit = int(input("Input the original unit index:\n"))
+original_unit = int(input("\nInput the original unit index:\n"))
 destiny_unit = int(input("Input the destiny unit index:\n"))
 Value = float(input("Input the value:\n"))
+
+
+#Store the factors of the original and destiny units
+original_factor = units[selected_quantity][original_unit]["factor"]
+destiny_factor = units[selected_quantity][destiny_unit]["factor"]
+
+print(f"RESULT: {conversion_factors_calculation(original_factor, destiny_factor, Value):.4f}")
