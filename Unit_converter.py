@@ -1,6 +1,34 @@
+#Calculation for converting all the units that have a conversion factor
 def conversion_factors_calculation(original_unit_factor, destiny_unit_factor, value):
     result = (value * original_unit_factor) / destiny_unit_factor
     
+    return result
+
+#Calculations for converting temperatures
+def temperature_calculator( original_temperature, destiny_temperature, value):
+    
+    match original_temperature:
+        case "kelvin":
+            if destiny_temperature == "fahrenheit":
+                result = 1.8 * (value - 273.15) + 32
+            else:
+                result = value - 273.15
+        
+        case "celcius":
+            if destiny_temperature == "fahrenheit":
+                result = (value * 1.8) + 32
+            else:
+                result = value + 273.15
+        
+        case "fahreneit":
+            if destiny_temperature == "kelvin":
+                result = (value - 32) / 1.8 + 273.15
+            else:
+                result = (value - 32) / 1.8
+        
+        case _:
+            print(f"Something went wrong while converting {value} {original_temperature} to {destiny_temperature}!")
+        
     return result
 
 
@@ -104,11 +132,20 @@ for index, unit in units[selected_quantity].items():
 #Respectively, inputs for the original and destiny units and value
 original_unit = int(input("\nInput the original unit index:\n"))
 destiny_unit = int(input("Input the destiny unit index:\n"))
-Value = float(input("Input the value:\n"))
+value = float(input("Input the value:\n"))
 
 
-#Store the factors of the original and destiny units
-original_factor = units[selected_quantity][original_unit]["factor"]
-destiny_factor = units[selected_quantity][destiny_unit]["factor"]
+#Separate the temperature function call from the other units's function
+if selected_quantity =="temperature":
+    #Store the name of the original and destiny temperature units
+    original_temp = units[selected_quantity][original_unit]["name"]
+    destiny_temp = units[selected_quantity][destiny_unit]["name"]
 
-print(f"RESULT: {conversion_factors_calculation(original_factor, destiny_factor, Value):.4f}")
+    print(temperature_calculator(original_temp, destiny_temp, value))
+    
+else:
+    #Store the factors of the original and destiny units
+    original_factor = units[selected_quantity][original_unit]["factor"]
+    destiny_factor = units[selected_quantity][destiny_unit]["factor"]
+
+    print(conversion_factors_calculation(original_factor, destiny_factor, value))
