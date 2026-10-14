@@ -1,33 +1,35 @@
 #Calculation for converting all the units that have a conversion factor
-def conversion_factors_calculation(original_unit_factor, destiny_unit_factor, value):
-    result = (value * original_unit_factor) / destiny_unit_factor
+def conversion_factors_calculation(source_unit_factor, target_unit_factor, value):
+    if source_unit_factor == target_unit_factor:
+        return value
     
+    result = (value * source_unit_factor) / target_unit_factor
     return result
 
 #Calculations for converting temperatures
-def temperature_calculator( original_temperature, destiny_temperature, value):
+def temperature_calculator( source_temperature, target_temperature, value):
     
-    match original_temperature:
+    if source_temperature == target_temperature:
+        return value
+    
+    match source_temperature:
         case "kelvin":
-            if destiny_temperature == "fahrenheit":
+            if target_temperature == "fahrenheit":
                 result = 1.8 * (value - 273.15) + 32
             else:
                 result = value - 273.15
         
         case "celcius":
-            if destiny_temperature == "fahrenheit":
+            if target_temperature == "fahrenheit":
                 result = (value * 1.8) + 32
             else:
                 result = value + 273.15
         
-        case "fahreneit":
-            if destiny_temperature == "kelvin":
+        case "fahrenheit":
+            if target_temperature == "kelvin":
                 result = (value - 32) / 1.8 + 273.15
             else:
                 result = (value - 32) / 1.8
-        
-        case _:
-            print(f"Something went wrong while converting {value} {original_temperature} to {destiny_temperature}!")
         
     return result
 
@@ -106,46 +108,93 @@ units = {
 
     "temperature": {
         1: {"name": "kelvin", "symbol": "K",},
-        2: {"name": "celcius", "symbol": "°F",},
-        3: {"name": "fahrenheit", "symbol": "°C",}
+        2: {"name": "celcius", "symbol": "°C",},
+        3: {"name": "fahrenheit", "symbol": "°F",}
     }
 }
 
 
-#Run through the quantities dictionary
-print("SUPPORTED QUANTITIES:\n")
-for index, quantity in quantities.items():
-    print(f"{index} - {quantity}")
+while True:
     
-#Input the quantity index
-quantity_index = int(input("\nInput the quantity index:\n"))
+    #Run through the quantities dictionary
+    print("SUPPORTED QUANTITIES:\n")
+    for index, quantity in quantities.items():
+        print(f"{index} - {quantity}")
+
+    try:
+        #Input the quantity index
+        user = input("\nInput the quantity index:\n")
+        quantity_index = int(user)
+        
+        if quantity_index < 1 or quantity_index > 6:
+            raise ValueError
+        
+    except ValueError:
+        print(f"\nPlease, type in the desired quantity index (only one).\nYour input was '{user}', which is unsuported.")
+    else:
+        break
 
 #store the selected quantity
 selected_quantity = quantities[quantity_index]
 
 
-#Run through the units dictionary
-print("\nSUPORTED UNITS\n")
-for index, unit in units[selected_quantity].items():
-   print(f"Index: {index:>2} | Name: {unit["name"]:<18} | Symbol: {unit["symbol"]}")
+#Respectively, inputs for the source and target units and value
+while True:
     
-#Respectively, inputs for the original and destiny units and value
-original_unit = int(input("\nInput the original unit index:\n"))
-destiny_unit = int(input("Input the destiny unit index:\n"))
-value = float(input("Input the value:\n"))
+    #Run through the units dictionary 
+    print("\nSUPORTED UNITS\n")
+    
+    if selected_quantity == "volume":
+        print("\n1 cubic decimeter (dm3) = 1 liter (l)\n1 cubic centimeter (cm3) = 1 milliliter (ml)\n")
+            
+    for index, unit in units[selected_quantity].items():
+        print(f"Index: {index:>2} | Name: {unit["name"]:<18} | Symbol: {unit["symbol"]}")
+
+    try:
+        user = input("\nInput the source unit index:\n")
+        source_unit = int(user)
+        if source_unit < 1 or source_unit > len(units[selected_quantity]):
+            raise ValueError
+        
+        user = input("Input the target unit index:\n")
+        target_unit = int(user)
+        if target_unit < 1 or target_unit > len(units[selected_quantity]):
+            raise ValueError
+        
+        user = input("Input the value:\n")
+        value = float(user)
+        
+    except ValueError:
+        print(f"\nPlease, type in the desired quantity index (only one).\nYour input was '{user}', which is unsuported.")
+    else:
+        break
 
 
 #Separate the temperature function call from the other units's function
 if selected_quantity =="temperature":
-    #Store the name of the original and destiny temperature units
-    original_temp = units[selected_quantity][original_unit]["name"]
-    destiny_temp = units[selected_quantity][destiny_unit]["name"]
+    
+    #Store the names and symbols of the source and target temperature units
+    source_temp = units[selected_quantity][source_unit]["name"]
+    target_temp = units[selected_quantity][target_unit]["name"]
+    
+    source_symbol = units[selected_quantity][source_unit]["symbol"]
+    target_symbol = units[selected_quantity][target_unit]["symbol"]
 
-    print(temperature_calculator(original_temp, destiny_temp, value))
+    temp_result = temperature_calculator(source_temp, target_temp, value)
+    
+    print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result:.2f}")
     
 else:
-    #Store the factors of the original and destiny units
-    original_factor = units[selected_quantity][original_unit]["factor"]
-    destiny_factor = units[selected_quantity][destiny_unit]["factor"]
+    #Store the factors, names and symbols of the source and target units
+    source_factor = units[selected_quantity][source_unit]["factor"]
+    target_factor = units[selected_quantity][target_unit]["factor"]
+    
+    source_name = units[selected_quantity][source_unit]["name"]
+    source_symbol = units[selected_quantity][source_unit]['symbol']
+    
+    target_name = units[selected_quantity][target_unit]["name"]
+    target_symbol = units[selected_quantity][target_unit]['symbol']
 
-    print(conversion_factors_calculation(original_factor, destiny_factor, value))
+    factor_result = conversion_factors_calculation(source_factor, target_factor, value)
+    
+    print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.2f}")
