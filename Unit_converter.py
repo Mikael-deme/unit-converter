@@ -182,7 +182,10 @@ if selected_quantity =="temperature":
 
     temp_result = temperature_calculator(source_temp, target_temp, value)
     
-    print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result:.2f}")
+    if temp_result >= 10**-4:
+        print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result:.4f} {target_symbol}")   
+    else:
+        print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result} {target_symbol}")
     
 else:
     #Store the factors, names and symbols of the source and target units
@@ -197,4 +200,12 @@ else:
 
     factor_result = conversion_factors_calculation(source_factor, target_factor, value)
     
-    print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.2f}")
+    if  factor_result >= 10**-4:
+        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.4f} {target_symbol}")
+    
+    elif factor_result >= 10**-16:
+        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.16f} {target_symbol}")
+    else:
+        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result} {target_symbol}")
+        
+        print(f"\nIt's a very small number.")
