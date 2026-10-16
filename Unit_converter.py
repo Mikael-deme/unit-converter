@@ -19,7 +19,7 @@ def temperature_calculator( source_temperature, target_temperature, value):
             else:
                 result = value - 273.15
         
-        case "celcius":
+        case "celsius":
             if target_temperature == "fahrenheit":
                 result = (value * 1.8) + 32
             else:
@@ -67,7 +67,7 @@ units = {
         4: {"name": "decagram", "symbol": "dag", "factor": 10},
         5: {"name": "decigram", "symbol": "dg", "factor": 0.1},
         6: {"name": "centigram", "symbol": "cg", "factor": 0.01},
-        7: {"name": "milligram", "symbol": "mg", "factor": 0.01},
+        7: {"name": "milligram", "symbol": "mg", "factor": 0.001},
         8: {"name": "ounce", "symbol": "oz", "factor": 28.349523125},
         9: {"name": "pound", "symbol": "lb", "factor": 453.59237},
         10: {"name": "US short ton", "symbol": "US ton", "factor": 907184.74}
@@ -108,11 +108,10 @@ units = {
 
     "temperature": {
         1: {"name": "kelvin", "symbol": "K",},
-        2: {"name": "celcius", "symbol": "°C",},
+        2: {"name": "celsius", "symbol": "°C",},
         3: {"name": "fahrenheit", "symbol": "°F",}
     }
 }
-
 
 while True:
     
@@ -126,19 +125,16 @@ while True:
         user = input("\nInput the quantity index:\n")
         quantity_index = int(user)
         
-        if quantity_index < 1 or quantity_index > 6:
-            raise ValueError
-        
     except ValueError:
-        print(f"\nPlease, type in the desired quantity index (only one).\nYour input was '{user}', which is unsuported.")
+        print(f"\nPlease, enter only the index (integer).\nYour input was '{user}', which is unsuported.")
+        
     else:
-        break
-
-#store the selected quantity
-selected_quantity = quantities[quantity_index]
-
-
-#Respectively, inputs for the source and target units and value
+        if quantity_index < 1 or quantity_index > len(quantities):
+            print(f"unsuported index : '{user}'.")
+        else:
+            selected_quantity = quantities[quantity_index]
+            break
+    
 while True:
     
     #Run through the units dictionary 
@@ -149,17 +145,20 @@ while True:
             
     for index, unit in units[selected_quantity].items():
         print(f"Index: {index:>2} | Name: {unit["name"]:<18} | Symbol: {unit["symbol"]}")
-
+        
     try:
+        #Respectively, inputs for the source and target units and value
         user = input("\nInput the source unit index:\n")
         source_unit = int(user)
         if source_unit < 1 or source_unit > len(units[selected_quantity]):
-            raise ValueError
+            print(f"unsuported index : '{user}'.")
+            continue
         
         user = input("Input the target unit index:\n")
         target_unit = int(user)
         if target_unit < 1 or target_unit > len(units[selected_quantity]):
-            raise ValueError
+            print(f"unsuported index : '{user}'.")
+            continue
         
         user = input("Input the value:\n")
         value = float(user)
@@ -182,10 +181,10 @@ if selected_quantity =="temperature":
 
     temp_result = temperature_calculator(source_temp, target_temp, value)
     
-    if temp_result >= 10**-4:
+    if abs(temp_result) >= 0.0001:
         print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result:.4f} {target_symbol}")   
     else:
-        print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result} {target_symbol}")
+        print(f"\n\nThe conversion: {value} {source_temp} ({source_symbol}) to {target_temp} ({target_symbol})\nEquals: {temp_result:.8e} {target_symbol}")
     
 else:
     #Store the factors, names and symbols of the source and target units
@@ -200,12 +199,7 @@ else:
 
     factor_result = conversion_factors_calculation(source_factor, target_factor, value)
     
-    if  factor_result >= 10**-4:
+    if  abs(factor_result) >= 0.0001:
         print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.4f} {target_symbol}")
-    
-    elif factor_result >= 10**-16:
-        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.16f} {target_symbol}")
     else:
-        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result} {target_symbol}")
-        
-        print(f"\nIt's a very small number.")
+        print(f"\n\nThe conversion: {value} {source_name} ({source_symbol}) to {target_name} ({target_symbol})\nEquals: {factor_result:.8e} {target_symbol}")
